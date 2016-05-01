@@ -10,6 +10,13 @@ public class PodStatus {
 
     private int memAvailable;
 
+    public PodStatus(int cpuCapacity, int memCapacity) {
+        this.cpuCapacity = cpuCapacity;
+        this.memCapacity = memCapacity;
+        this.cpuAvailable = cpuCapacity;
+        this.memAvailable = memCapacity;
+    }
+
     public int getCpuCapacity() {
         return cpuCapacity;
     }

@@ -1,17 +1,16 @@
 package Service;
 
+import java.util.List;
 import java.util.Map;
 
-import Pod.Pod;
-
-//podMap是用appName作为key，value为appName对应的pod集
+//podMap是用appName作为key，value为appName对应的podName集
 public class Service {
 
-    private String             ip;
+    private String                    ip;
 
-    private int                port;
+    private int                       port;
 
-    private Map<String, Pod[]> podMap;
+    private Map<String, List<String>> podMap;
 
     public String getIp() {
         return ip;
@@ -29,11 +28,11 @@ public class Service {
         this.port = port;
     }
 
-    public Map<String, Pod[]> getPodMap() {
+    public Map<String, List<String>> getPodMap() {
         return podMap;
     }
 
-    public void setPodMap(Map<String, Pod[]> podMap) {
+    public void setPodMap(Map<String, List<String>> podMap) {
         this.podMap = podMap;
     }
 

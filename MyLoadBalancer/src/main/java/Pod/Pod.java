@@ -9,6 +9,13 @@ public class Pod {
 
     private String podName;
 
+    public Pod(String address, int port, String appName, String podName) {
+        this.address = address;
+        this.port = port;
+        this.appName = appName;
+        this.podName = podName;
+    }
+
     public String getAddress() {
         return address;
     }
