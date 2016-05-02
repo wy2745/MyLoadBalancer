@@ -10,11 +10,15 @@ public class PodStatus {
 
     private int memAvailable;
 
-    public PodStatus(int cpuCapacity, int memCapacity) {
+    public void init(int cpuCapacity, int memCapacity) {
         this.cpuCapacity = cpuCapacity;
         this.memCapacity = memCapacity;
         this.cpuAvailable = cpuCapacity;
         this.memAvailable = memCapacity;
+    }
+
+    public PodStatus(int cpuCapacity, int memCapacity) {
+        init(cpuCapacity, memCapacity);
     }
 
     public int getCpuCapacity() {

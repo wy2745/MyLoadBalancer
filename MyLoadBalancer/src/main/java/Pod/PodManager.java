@@ -1,14 +1,14 @@
 package Pod;
 
-import Address.AddressController;
+import Address.PodAddressController;
 
 public class PodManager {
-    private AddressController addressController;
+    private PodAddressController addressController;
 
-    private PodController     podController;
+    private PodController        podController;
 
-    public void init() {
-        addressController = new AddressController();
+    private void init() {
+        addressController = new PodAddressController();
         podController = new PodController();
     }
 
@@ -16,8 +16,8 @@ public class PodManager {
         init();
     }
 
-    public String findPodByAddress(String address, int port) {
-        return addressController.findPod(address, port);
+    public Pod findPodByAddress(String address, int port) {
+        return podController.findPod(addressController.findPod(address, port));
     }
 
     public Pod findPodByName(String podName) {
@@ -28,11 +28,10 @@ public class PodManager {
         return podController.findPodStatus(podName);
     }
 
-    public Pod createPod(String podName, String appName, String address, int port, int cpuCapacity,
+    public Pod createPod(String podName, String address, int port, int cpuCapacity,
                          int memCapacity) {
         addressController.createPod(address, port, podName);
-        Pod pod = podController.createPod(podName, appName, address, port, cpuCapacity,
-            memCapacity);
+        Pod pod = podController.createPod(podName, address, port, cpuCapacity, memCapacity);
         return pod;
     }
 

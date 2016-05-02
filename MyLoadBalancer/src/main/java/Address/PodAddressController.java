@@ -3,7 +3,7 @@ package Address;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class AddressController {
+public class PodAddressController {
     //address的key是ip地址，value是该address对应的port信息的map，key是port，value是对应的pod的podname
     private Map<String, Map<Integer, String>> addressMap;
 
@@ -15,6 +15,10 @@ public class AddressController {
 
     public void init() {
         addressMap = new TreeMap<String, Map<Integer, String>>();
+    }
+
+    public PodAddressController() {
+        init();
     }
 
     public String findPod(String address, int port) {

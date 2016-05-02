@@ -2,6 +2,7 @@ package Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 //podMap是用appName作为key，value为appName对应的podName集
 public class Service {
@@ -10,7 +11,20 @@ public class Service {
 
     private int                       port;
 
+    private String                    svcName;
+
     private Map<String, List<String>> podMap;
+
+    private void init(String ip, int port, String svcName) {
+        this.ip = ip;
+        this.port = port;
+        this.svcName = svcName;
+        this.podMap = new TreeMap<String, List<String>>();
+    }
+
+    public Service(String ip, int port, String svcName) {
+        init(ip, port, svcName);
+    }
 
     public String getIp() {
         return ip;
@@ -34,6 +48,14 @@ public class Service {
 
     public void setPodMap(Map<String, List<String>> podMap) {
         this.podMap = podMap;
+    }
+
+    public String getSvcName() {
+        return svcName;
+    }
+
+    public void setSvcName(String svcName) {
+        this.svcName = svcName;
     }
 
 }

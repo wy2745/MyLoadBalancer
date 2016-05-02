@@ -7,7 +7,13 @@ public class RequestLog {
 
     private int requiredMem;
 
-    private int requireTime;
+    private int requiredTime;
+
+    public RequestLog(int requiredCpu, int requiredMem, int requiredTime) {
+        this.requiredCpu = requiredCpu;
+        this.requiredMem = requiredMem;
+        this.requiredTime = requiredTime;
+    }
 
     public int getRequiredCpu() {
         return requiredCpu;
@@ -25,12 +31,12 @@ public class RequestLog {
         this.requiredMem = requiredMem;
     }
 
-    public int getRequireTime() {
-        return requireTime;
+    public int getRequiredTime() {
+        return requiredTime;
     }
 
-    public void setRequireTime(int requireTime) {
-        this.requireTime = requireTime;
+    public void setRequiredTime(int requiredTime) {
+        this.requiredTime = requiredTime;
     }
 
 }

@@ -1,13 +1,14 @@
 package Request;
 
 public class Request {
+
     private int    requestId;
 
     private String ip;
 
     private int    port;
 
-    private String appName;
+    private String svcName;
 
     private String path;
 
@@ -19,12 +20,17 @@ public class Request {
 
     private int    requireTime;
 
-    public int getRequestId() {
-        return requestId;
+    public Request(String ip, int port, String path, String svcName) {
+        this.ip = ip;
+        this.port = port;
+        this.path = path;
+        this.svcName = svcName;
     }
 
-    public void setRequestId(int requestId) {
-        this.requestId = requestId;
+    public void setRequestLog(RequestLog requestLog) {
+        this.requiredCpu = requestLog.getRequiredCpu();
+        this.requiredMem = requestLog.getRequiredMem();
+        this.requireTime = requestLog.getRequiredTime();
     }
 
     public String getIp() {
@@ -59,6 +65,22 @@ public class Request {
         this.status = status;
     }
 
+    public String getSvcName() {
+        return svcName;
+    }
+
+    public void setSvcName(String svcName) {
+        this.svcName = svcName;
+    }
+
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
+    }
+
     public int getRequiredCpu() {
         return requiredCpu;
     }
@@ -81,14 +103,6 @@ public class Request {
 
     public void setRequireTime(int requireTime) {
         this.requireTime = requireTime;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
     }
 
 }

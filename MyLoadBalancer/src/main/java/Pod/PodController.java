@@ -10,11 +10,15 @@ public class PodController {
 
     private Map<String, Pod>       podSet;
 
-    private String                 funcPrefix = "pod,podstatus: ";
+    private String                 funcPrefix = "pod,podstatus-controller: ";
 
-    public void init() {
+    private void init() {
         podSet = new TreeMap<String, Pod>();
         podStatusMap = new TreeMap<String, PodStatus>();
+    }
+
+    public PodController() {
+        init();
     }
 
     private void printmsg(String msg) {
@@ -35,7 +39,7 @@ public class PodController {
         return podStatus;
     }
 
-    public Pod createPod(String podName, String appName, String address, int port, int cpuCapacity,
+    public Pod createPod(String podName, String address, int port, int cpuCapacity,
                          int memCapacity) {
         Pod pod = podSet.get(podName);
         if (pod != null) {
@@ -43,7 +47,7 @@ public class PodController {
             return pod;
         }
         PodStatus podStatus = new PodStatus(cpuCapacity, memCapacity);
-        pod = new Pod(address, port, appName, podName);
+        pod = new Pod(address, port, podName);
         podStatusMap.put(podName, podStatus);
         podSet.put(podName, pod);
         printmsg("成功创建");

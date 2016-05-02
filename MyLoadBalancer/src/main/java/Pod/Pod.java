@@ -5,14 +5,11 @@ public class Pod {
 
     private int    port;
 
-    private String appName;
-
     private String podName;
 
-    public Pod(String address, int port, String appName, String podName) {
+    public Pod(String address, int port, String podName) {
         this.address = address;
         this.port = port;
-        this.appName = appName;
         this.podName = podName;
     }
 
@@ -30,14 +27,6 @@ public class Pod {
 
     public void setPort(int port) {
         this.port = port;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
     }
 
     public String getPodName() {
