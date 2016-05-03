@@ -1,5 +1,7 @@
 package Service;
 
+import java.util.Map;
+
 import Address.ServiceAddressController;
 
 public class ServiceManager {
@@ -15,6 +17,10 @@ public class ServiceManager {
 
     public ServiceManager() {
         init();
+    }
+
+    public Map<String, Service> findAllService() {
+        return serviceController.getServices();
     }
 
     public Service findServiceByAddress(String ip, int port) {

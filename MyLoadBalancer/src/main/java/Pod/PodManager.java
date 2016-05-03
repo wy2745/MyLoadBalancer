@@ -1,5 +1,7 @@
 package Pod;
 
+import java.util.Map;
+
 import Address.PodAddressController;
 
 public class PodManager {
@@ -14,6 +16,10 @@ public class PodManager {
 
     public PodManager() {
         init();
+    }
+
+    public Map<String, Pod> findAllPod() {
+        return podController.getPodSet();
     }
 
     public Pod findPodByAddress(String address, int port) {

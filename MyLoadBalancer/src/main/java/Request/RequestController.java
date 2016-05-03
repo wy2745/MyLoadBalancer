@@ -28,6 +28,14 @@ public class RequestController {
         System.out.println(funcPrefix + msg);
     }
 
+    public List<Request> findAllRequest() {
+        return this.requests;
+    }
+
+    public Map<String, Map<String, RequestLog>> findAllRequestLog() {
+        return this.requestsLogMap;
+    }
+
     public Request findRequest(int requestId) {
         if (requestId < requests.size())
             return requests.get(requestId);
