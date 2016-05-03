@@ -48,6 +48,32 @@ public class ServiceController {
         return true;
     }
 
+    public boolean addPodToService(String svcName, String podName) {
+        if (!Services.containsKey(svcName)) {
+            printmsg("不存在该service");
+            return false;
+        }
+        if (Services.get(svcName).getPods().containsKey(podName)) {
+            printmsg("该pod已经在service内");
+            return false;
+        }
+        Services.get(svcName).getPods().put(podName, 1);
+        return true;
+    }
+
+    public boolean deletePodFromService(String svcName, String podName) {
+        if (!Services.containsKey(svcName)) {
+            printmsg("不存在该service");
+            return false;
+        }
+        if (!Services.get(svcName).getPods().containsKey(podName)) {
+            printmsg("该pod不在service内");
+            return false;
+        }
+        Services.get(svcName).getPods().remove(podName);
+        return true;
+    }
+
     public Map<String, Service> getServices() {
         return Services;
     }

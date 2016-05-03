@@ -47,7 +47,7 @@ public class PodController {
             return pod;
         }
         PodStatus podStatus = new PodStatus(cpuCapacity, memCapacity);
-        pod = new Pod(address, port, podName);
+        pod = new Pod(address, port, podName, cpuCapacity, memCapacity);
         podStatusMap.put(podName, podStatus);
         podSet.put(podName, pod);
         printmsg("成功创建");

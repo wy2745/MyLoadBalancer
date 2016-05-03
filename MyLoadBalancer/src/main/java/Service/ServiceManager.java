@@ -35,6 +35,13 @@ public class ServiceManager {
         Service svc = serviceController.findService(svcName);
         addressController.deleteService(svc.getIp(), svc.getPort());
         return serviceController.deleteService(svcName);
+    }
 
+    public boolean addPodToService(String svcName, String podName) {
+        return serviceController.addPodToService(svcName, podName);
+    }
+
+    public boolean deletePodFromService(String svcName, String podName) {
+        return serviceController.deletePodFromService(svcName, podName);
     }
 }

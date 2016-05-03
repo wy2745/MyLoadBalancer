@@ -20,6 +20,8 @@ public class Request {
 
     private int    requireTime;
 
+    private int    handleTime;
+
     public Request(String ip, int port, String path, String svcName) {
         this.ip = ip;
         this.port = port;
@@ -31,6 +33,25 @@ public class Request {
         this.requiredCpu = requestLog.getRequiredCpu();
         this.requiredMem = requestLog.getRequiredMem();
         this.requireTime = requestLog.getRequiredTime();
+    }
+
+    public void startHandling() {
+        if (this.status != Util.constrain.pending)
+            return;
+        this.status = Util.constrain.handling;
+        this.handleTime = 0;
+    }
+
+    public void process() {
+        if (this.status != Util.constrain.handling)
+            return;
+        this.handleTime += 1;
+        if (this.handleTime == this.requireTime)
+            this.status = Util.constrain.finished;
+    }
+
+    public boolean finish() {
+        return (this.status == Util.constrain.finished);
     }
 
     public String getIp() {
@@ -103,6 +124,14 @@ public class Request {
 
     public void setRequireTime(int requireTime) {
         this.requireTime = requireTime;
+    }
+
+    public int getHandleTime() {
+        return handleTime;
+    }
+
+    public void setHandleTime(int handleTime) {
+        this.handleTime = handleTime;
     }
 
 }
