@@ -1,10 +1,13 @@
 package Cluster;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
 
 import Pod.Pod;
 import Pod.PodManager;
+import Pod.PodRunner;
 import Request.Request;
 import Request.RequestController;
 import Request.RequestLog;
@@ -18,12 +21,15 @@ public class ClusterManager {
 
     private ServiceManager    serviceManager;
 
+    private List<PodRunner>   podRunners;
+
     private String            funcPrefix = "cluster-controller:  ";
 
     private void init() {
         podManager = new PodManager();
         requestController = new RequestController();
         serviceManager = new ServiceManager();
+        podRunners = new ArrayList<PodRunner>();
     }
 
     public void ListService() {
@@ -121,6 +127,21 @@ public class ClusterManager {
                 requiredTime);
         printmsg("service不存在");
         return null;
+    }
+
+    public void podRun(String podName) {
+        podManager.findPodByName(podName).run();
+    }
+
+    public void podStop(String podName) {
+        podManager.findPodByName(podName).stop();
+    }
+
+    public void createPodRunner(String podName) {
+        Pod pod = podManager.findPodByName(podName);
+        if (pod == null)
+            return;
+        new Timer().schedule(new PodRunner(pod), 1000);
     }
 
     public ClusterManager() {

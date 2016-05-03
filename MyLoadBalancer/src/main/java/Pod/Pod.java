@@ -20,6 +20,8 @@ public class Pod {
 
     private boolean       running;
 
+    private boolean       changed;
+
     private int           cpuCapacity;
 
     private int           memCapacity;
@@ -44,6 +46,9 @@ public class Pod {
         this.podName = podName;
         this.cpuCapacity = this.cpuAvailable = cpuCapacity;
         this.memCapacity = this.memAvailable = memCapacity;
+        this.running = false;
+        this.cpuLoad = this.memLoad = 0;
+        this.changed = false;
 
         waittingrequests = new ArrayList<Request>();
         handlingRequest = new ArrayList<Request>();
@@ -110,11 +115,22 @@ public class Pod {
     }
 
     public void run() {
-        this.running = true;
+        this.podName += "1";
+        this.changed = true;
+        System.out.println("run");
     }
 
     public void stop() {
-        this.running = false;
+        this.podName += "1";
+        this.changed = true;
+        System.out.println("stop");
+    }
+
+    public void test() {
+        if (this.changed == true) {
+            System.out.println(this.podName + "status changed");
+            this.changed = false;
+        }
     }
 
     public String getAddress() {
