@@ -19,6 +19,7 @@ public class ClusterManager {
     private RequestController requestController;
 
     private ServiceManager    serviceManager;
+
     private boolean           selfObserve;
 
     private String            funcPrefix = "cluster-controller:  ";
@@ -53,6 +54,27 @@ public class ClusterManager {
                                + ",memStatus: " + pod.getMemAvailable() + ",cpuCapacity: "
                                + pod.getCpuCapacity() + ",memCapacity: " + pod.getMemCapacity());
         }
+    }
+
+    public void ListPodUsage() {
+        Map<String, Pod> podset = podManager.findAllPod();
+        double cpuUsage = 0;
+        double memUsage = 0;
+        System.out.println("Pod资源使用率:\n\n");
+        for (Pod pod : podset.values()) {
+            System.out.println("podName: " + pod.getPodName() + ",cpuStatus: "
+                               + pod.getCpuAvailable() + ",memStatus: " + pod.getMemAvailable()
+                               + ",cpuCapacity: " + pod.getCpuCapacity() + ",memCapacity: "
+                               + pod.getMemCapacity() + ",cpuUsage: "
+                               + (1 - (double) pod.getCpuAvailable() / pod.getCpuCapacity())
+                               + ",memUsage: "
+                               + (1 - (double) pod.getMemAvailable() / pod.getMemCapacity()));
+            cpuUsage += (1 - (double) pod.getCpuAvailable() / pod.getCpuCapacity());
+            memUsage += (1 - (double) pod.getMemAvailable() / pod.getMemCapacity());
+        }
+        cpuUsage /= podset.size();
+        memUsage /= podset.size();
+        System.out.println("\n\n总体资源使用率: Cpu: " + cpuUsage + ",Mem: " + memUsage);
     }
 
     public void ListRequest() {
@@ -146,6 +168,7 @@ public class ClusterManager {
     }
 
     public boolean startObserveRequest() {
+        ListPodUsage();
         return this.requestController.observerRequest();
 
     }
