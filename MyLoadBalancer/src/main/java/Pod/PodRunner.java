@@ -12,7 +12,7 @@ public class PodRunner extends TimerTask {
     }
 
     public void run() {
-        pod.test();
+        pod.process();
         new Timer().schedule(new PodRunner(pod), 1000);
     }
 

@@ -111,6 +111,10 @@ public class ClusterManager {
         return false;
     }
 
+    public void assignRequestToPod(Request request, String podName) {
+        podManager.findPodByName(podName).receiveWaittingRequest(request);
+    }
+
     public Request createRequest(String ip, int port, String path) {
         Service service = serviceManager.findServiceByAddress(ip, port);
         if (service == null) {

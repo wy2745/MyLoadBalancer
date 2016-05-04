@@ -12,15 +12,9 @@ public class Pod {
 
     private String        podName;
 
-    private List<Request> waittingrequests;
-
-    private List<Request> handlingRequest;
-
-    private List<Request> finishedRequest;
+    private List<Request> podRequests;
 
     private boolean       running;
-
-    private boolean       changed;
 
     private int           cpuCapacity;
 
@@ -48,31 +42,32 @@ public class Pod {
         this.memCapacity = this.memAvailable = memCapacity;
         this.running = false;
         this.cpuLoad = this.memLoad = 0;
-        this.changed = false;
 
-        waittingrequests = new ArrayList<Request>();
-        handlingRequest = new ArrayList<Request>();
-        finishedRequest = new ArrayList<Request>();
+        this.podRequests = new ArrayList<Request>();
     }
 
     public boolean receiveWaittingRequest(Request request) {
-        if (waittingrequests.contains(request)) {
+        if (!request.forwarding())
+            return false;
+        if (podRequests.contains(request)) {
             printmsg("request已被接收");
             return false;
         }
-        request.setStatus(Util.constrain.pending);
-        waittingrequests.add(request);
+        request.setpending();
+        printmsg("已接受request: " + request.getRequestId() + "到" + podName);
+        podRequests.add(request);
         this.cpuLoad += request.getRequiredCpu();
         this.memLoad += request.getRequiredMem();
         return true;
     }
 
     private void receiveHandlingRequest(Request request) {
-        if (waittingrequests.contains(request)) {
-            waittingrequests.remove(request);
+        if (!request.pending())
+            return;
+        if (podRequests.contains(request)) {
+            //waittingrequests.remove(request);
             printmsg("requestId: " + request.getRequestId() + "开始运行于pod: " + this.podName);
             request.startHandling();
-            this.handlingRequest.add(request);
             this.cpuAvailable -= request.getRequiredCpu();
             this.memAvailable -= request.getRequiredMem();
             printmsg("开始处理requestId: " + request.getRequestId());
@@ -80,25 +75,35 @@ public class Pod {
     }
 
     private void receiveFinishRequest(Request request) {
-        if (handlingRequest.contains(request) && request.finish()) {
-            handlingRequest.remove(request);
+        if (request.finish())
             printmsg("requestId: " + request.getRequestId() + "完成于pod: " + this.podName);
-            this.finishedRequest.add(request);
-        }
     }
 
     public void process() {
         if (this.running) {
-            for (Request request : this.handlingRequest) {
+            for (Request request : this.podRequests) {
+                if (!request.handling())
+                    continue;
                 request.process();
+                System.out.println("requestId: " + request.getRequestId() + ",handleTime:"
+                                   + request.getHandleTime() + ",requiredTime: "
+                                   + request.getRequireTime());
                 if (request.finish()) {
                     reduceLoad(request.getRequiredCpu(), request.getRequiredMem());
                     receiveFinishRequest(request);
                 }
             }
-            for (Request request : this.waittingrequests) {
-                if (candigest(request.getRequiredCpu(), request.getRequiredMem()))
+            for (Request request : this.podRequests) {
+                if (!request.pending())
+                    continue;
+                System.out
+                    .println("requestId: " + request.getRequestId() + ",cpu: "
+                             + request.getRequiredCpu() + ",mem: " + request.getRequiredMem());
+                System.out.println("PodName: " + this.podName + ",cpua: " + this.cpuAvailable
+                                   + ",mema: " + this.memAvailable);
+                if (candigest(request.getRequiredCpu(), request.getRequiredMem())) {
                     receiveHandlingRequest(request);
+                }
             }
         }
     }
@@ -115,22 +120,13 @@ public class Pod {
     }
 
     public void run() {
-        this.podName += "1";
-        this.changed = true;
-        System.out.println("run");
+        this.running = true;
+        printmsg(podName + "is running");
     }
 
     public void stop() {
-        this.podName += "1";
-        this.changed = true;
-        System.out.println("stop");
-    }
-
-    public void test() {
-        if (this.changed == true) {
-            System.out.println(this.podName + "status changed");
-            this.changed = false;
-        }
+        this.running = false;
+        printmsg(podName + "is stoped!");
     }
 
     public String getAddress() {
@@ -197,22 +193,6 @@ public class Pod {
         this.memAvailable = memAvailable;
     }
 
-    public List<Request> getWaittingrequests() {
-        return waittingrequests;
-    }
-
-    public void setWaittingrequests(List<Request> waittingrequests) {
-        this.waittingrequests = waittingrequests;
-    }
-
-    public List<Request> getHandlingRequest() {
-        return handlingRequest;
-    }
-
-    public void setHandlingRequest(List<Request> handlingRequest) {
-        this.handlingRequest = handlingRequest;
-    }
-
     public int getCpuLoad() {
         return cpuLoad;
     }
@@ -227,14 +207,6 @@ public class Pod {
 
     public void setMemLoad(int memLoad) {
         this.memLoad = memLoad;
-    }
-
-    public List<Request> getFinishedRequest() {
-        return finishedRequest;
-    }
-
-    public void setFinishedRequest(List<Request> finishedRequest) {
-        this.finishedRequest = finishedRequest;
     }
 
 }

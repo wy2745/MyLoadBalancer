@@ -50,8 +50,36 @@ public class Request {
             this.status = Util.constrain.finished;
     }
 
+    public boolean forwarding() {
+        return (this.status == Util.constrain.forwarding);
+    }
+
+    public void setforwarding() {
+        this.status = Util.constrain.forwarding;
+    }
+
+    public boolean pending() {
+        return (this.status == Util.constrain.pending);
+    }
+
+    public void setpending() {
+        this.status = Util.constrain.pending;
+    }
+
+    public boolean handling() {
+        return (this.status == Util.constrain.handling);
+    }
+
+    public void sethandling() {
+        this.status = Util.constrain.handling;
+    }
+
     public boolean finish() {
         return (this.status == Util.constrain.finished);
+    }
+
+    public void setfinish() {
+        this.status = Util.constrain.finished;
     }
 
     public String getIp() {
