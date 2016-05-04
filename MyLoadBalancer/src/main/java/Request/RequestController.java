@@ -5,23 +5,64 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import Util.constrain;
-
 public class RequestController {
     //key:svcName,value:svcName对应的requestMap(key:path,value:path对应的requestLog)
     private Map<String, Map<String, RequestLog>> requestsLogMap;
 
     private List<Request>                        requests;
 
+    private List<Integer>                        finishLst;
+
+    private boolean                              observe;
+
+    private int                                  handleTime;
+
     private String                               funcPrefix = "request-controller: ";
 
     private void init() {
         requestsLogMap = new TreeMap<String, Map<String, RequestLog>>();
         requests = new ArrayList<Request>();
+        finishLst = new ArrayList<Integer>();
+        handleTime = 0;
+        observe = false;
+
     }
 
     public RequestController() {
         init();
+    }
+
+    public void startObserve() {
+        this.observe = true;
+    }
+
+    public void stopObserver() {
+        this.observe = false;
+    }
+
+    public boolean observerRequest() {
+        if (this.observe) {
+            int i = 0;
+            handleTime += 1;
+            int size = requests.size();
+            while (i < size) {
+                if (finishLst.contains(i)) {
+                    i++;
+                    continue;
+                }
+                if (requests.get(i).finish())
+                    finishLst.add(i);
+                i++;
+                if (finishLst.size() == requests.size()) {
+                    printmsg("所有请求都被完成了，完成时间是" + handleTime);
+                    observe = false;
+                    handleTime = 0;
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
     }
 
     private void printmsg(String msg) {
@@ -61,7 +102,7 @@ public class RequestController {
         Request request = new Request(ip, port, path, svcName);
         request.setRequestLog(requestLog);
         request.setRequestId(this.requests.size());
-        request.setStatus(constrain.forwarding);
+        request.setforwarding();
         this.requests.add(request);
         return request;
     }

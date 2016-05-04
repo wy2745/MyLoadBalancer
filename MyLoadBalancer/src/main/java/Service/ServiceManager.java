@@ -3,6 +3,7 @@ package Service;
 import java.util.Map;
 
 import Address.ServiceAddressController;
+import Pod.Pod;
 
 public class ServiceManager {
 
@@ -43,8 +44,12 @@ public class ServiceManager {
         return serviceController.deleteService(svcName);
     }
 
-    public boolean addPodToService(String svcName, String podName) {
-        return serviceController.addPodToService(svcName, podName);
+    public Map<String, Pod> getPoddBySvcName(String svcName) {
+        return serviceController.getPodBySvcName(svcName);
+    }
+
+    public boolean addPodToService(String svcName, Pod pod) {
+        return serviceController.addPodToService(svcName, pod);
     }
 
     public boolean deletePodFromService(String svcName, String podName) {

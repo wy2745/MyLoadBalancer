@@ -119,6 +119,47 @@ public class Pod {
         this.memLoad -= mem;
     }
 
+    public int choicePick1Scorer(Request request) {
+        int score = 0;
+        boolean cpuOk = (this.cpuLoad < this.cpuCapacity)
+                        && (this.cpuCapacity - this.cpuLoad < request.getRequiredCpu());
+        boolean memOk = (this.memLoad < this.memCapacity)
+                        && (this.memCapacity - this.memLoad < request.getRequiredMem());
+        if (cpuOk && memOk) {
+            int cpuscore = (int) ((1 - (double) ((this.cpuLoad + request.getRequiredCpu())
+                                                 / cpuCapacity))
+                                  * 100);//最多100
+            int memscore = (int) ((1 - (double) ((this.memLoad + request.getRequiredMem())
+                                                 / memCapacity))
+                                  * 100);//最多100
+            return score - cpuscore - memscore;
+        } else if (!cpuOk && memOk) {
+            int cpuscore = (int) (((double) ((this.cpuLoad + request.getRequiredCpu()) / cpuLoad)
+                                   - 1)
+                                  * 100);
+            int memscore = (int) ((1 - (double) ((this.memLoad + request.getRequiredMem())
+                                                 / memCapacity))
+                                  * 100);
+            return score - cpuscore - memscore - 100;
+        } else if (!memOk && cpuOk) {
+            int memscore = (int) (((double) ((this.memLoad + request.getRequiredMem()) / memLoad)
+                                   - 1)
+                                  * 100);
+            int cpuscore = (int) ((1 - (double) ((this.cpuLoad + request.getRequiredCpu())
+                                                 / cpuCapacity))
+                                  * 100);
+            return score - cpuscore - memscore - 100;
+        } else {
+            int memscore = (int) (((double) ((this.memLoad + request.getRequiredMem()) / memLoad)
+                                   - 1)
+                                  * 100);
+            int cpuscore = (int) (((double) ((this.cpuLoad + request.getRequiredCpu()) / cpuLoad)
+                                   - 1)
+                                  * 100);
+            return score - cpuscore - memscore - 200;
+        }
+    }
+
     public void run() {
         this.running = true;
         printmsg(podName + "is running");
@@ -133,80 +174,40 @@ public class Pod {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public int getPort() {
         return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public String getPodName() {
         return podName;
     }
 
-    public void setPodName(String podName) {
-        this.podName = podName;
-    }
-
     public boolean isRunning() {
         return running;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
     }
 
     public int getCpuCapacity() {
         return cpuCapacity;
     }
 
-    public void setCpuCapacity(int cpuCapacity) {
-        this.cpuCapacity = cpuCapacity;
-    }
-
     public int getMemCapacity() {
         return memCapacity;
-    }
-
-    public void setMemCapacity(int memCapacity) {
-        this.memCapacity = memCapacity;
     }
 
     public int getCpuAvailable() {
         return cpuAvailable;
     }
 
-    public void setCpuAvailable(int cpuAvailable) {
-        this.cpuAvailable = cpuAvailable;
-    }
-
     public int getMemAvailable() {
         return memAvailable;
-    }
-
-    public void setMemAvailable(int memAvailable) {
-        this.memAvailable = memAvailable;
     }
 
     public int getCpuLoad() {
         return cpuLoad;
     }
 
-    public void setCpuLoad(int cpuLoad) {
-        this.cpuLoad = cpuLoad;
-    }
-
     public int getMemLoad() {
         return memLoad;
-    }
-
-    public void setMemLoad(int memLoad) {
-        this.memLoad = memLoad;
     }
 
 }

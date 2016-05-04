@@ -12,8 +12,11 @@ public class PodRunner extends TimerTask {
     }
 
     public void run() {
-        pod.process();
-        new Timer().schedule(new PodRunner(pod), 1000);
+        if (pod.isRunning()) {
+            System.out.println("pod: " + pod.getPodName() + " is running");
+            pod.process();
+            new Timer().schedule(new PodRunner(pod), 1000);
+        }
     }
 
 }

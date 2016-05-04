@@ -3,22 +3,24 @@ package Service;
 import java.util.Map;
 import java.util.TreeMap;
 
+import Pod.Pod;
+
 //
 public class Service {
 
-    private String               ip;
+    private String           ip;
 
-    private int                  port;
+    private int              port;
 
-    private String               svcName;
+    private String           svcName;
 
-    private Map<String, Integer> pods;
+    private Map<String, Pod> pods;
 
     private void init(String ip, int port, String svcName) {
         this.ip = ip;
         this.port = port;
         this.svcName = svcName;
-        this.pods = new TreeMap<String, Integer>();
+        this.pods = new TreeMap<String, Pod>();
     }
 
     public Service(String ip, int port, String svcName) {
@@ -29,32 +31,16 @@ public class Service {
         return ip;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
     public int getPort() {
         return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public String getSvcName() {
         return svcName;
     }
 
-    public void setSvcName(String svcName) {
-        this.svcName = svcName;
-    }
-
-    public Map<String, Integer> getPods() {
+    public Map<String, Pod> getPods() {
         return pods;
-    }
-
-    public void setPods(Map<String, Integer> pods) {
-        this.pods = pods;
     }
 
 }

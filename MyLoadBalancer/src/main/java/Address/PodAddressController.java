@@ -69,8 +69,4 @@ public class PodAddressController {
         return addressMap;
     }
 
-    public void setAddressMap(Map<String, Map<Integer, String>> address) {
-        this.addressMap = address;
-    }
-
 }

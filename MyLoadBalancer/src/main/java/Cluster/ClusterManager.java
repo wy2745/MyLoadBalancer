@@ -1,6 +1,5 @@
 package Cluster;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -20,8 +19,7 @@ public class ClusterManager {
     private RequestController requestController;
 
     private ServiceManager    serviceManager;
-
-    private List<PodRunner>   podRunners;
+    private boolean           selfObserve;
 
     private String            funcPrefix = "cluster-controller:  ";
 
@@ -29,7 +27,7 @@ public class ClusterManager {
         podManager = new PodManager();
         requestController = new RequestController();
         serviceManager = new ServiceManager();
-        podRunners = new ArrayList<PodRunner>();
+        selfObserve = false;
     }
 
     public void ListService() {
@@ -39,9 +37,9 @@ public class ClusterManager {
             Service service = serviceset.get(svcName);
             System.out.println("service name: " + svcName + ", address: " + service.getIp() + ":"
                                + service.getPort());
-            Map<String, Integer> podMap = service.getPods();
-            for (String podName : podMap.keySet()) {
-                System.out.println("    pod:" + podName);
+            Map<String, Pod> podMap = service.getPods();
+            for (Pod pod : podMap.values()) {
+                System.out.println("    pod:" + pod.getPodName());
             }
         }
     }
@@ -49,8 +47,7 @@ public class ClusterManager {
     public void ListPod() {
         printmsg("所有pod:");
         Map<String, Pod> podset = podManager.findAllPod();
-        for (String key : podset.keySet()) {
-            Pod pod = podset.get(key);
+        for (Pod pod : podset.values()) {
             System.out.println("podName: " + pod.getPodName() + ",address: " + pod.getAddress()
                                + ":" + pod.getPort() + ",cpuStatus: " + pod.getCpuAvailable()
                                + ",memStatus: " + pod.getMemAvailable() + ",cpuCapacity: "
@@ -98,7 +95,7 @@ public class ClusterManager {
     public boolean addPodToService(String svcName, String podName) {
         if (serviceManager.findServiceByName(svcName) != null
             && podManager.findPodByName(podName) != null)
-            return serviceManager.addPodToService(svcName, podName);
+            return serviceManager.addPodToService(svcName, podManager.findPodByName(podName));
         printmsg("pod或者service不存在");
         return false;
     }
@@ -146,6 +143,31 @@ public class ClusterManager {
         if (pod == null)
             return;
         new Timer().schedule(new PodRunner(pod), 1000);
+    }
+
+    public boolean startObserveRequest() {
+        return this.requestController.observerRequest();
+
+    }
+
+    public void selfObserveRun() {
+        this.selfObserve = true;
+        requestController.startObserve();
+    }
+
+    public void selfObserveStop() {
+        this.selfObserve = false;
+        requestController.stopObserver();
+    }
+
+    public boolean whetherselfObserve() {
+        return this.selfObserve;
+    }
+
+    public void startSelfObserve() {
+        if (selfObserve) {
+            new Timer().schedule(new ClusterSelfObserver(this), 1000);
+        }
     }
 
     public ClusterManager() {

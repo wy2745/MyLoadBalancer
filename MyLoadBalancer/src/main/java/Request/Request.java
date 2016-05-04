@@ -86,40 +86,20 @@ public class Request {
         return ip;
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
     public int getPort() {
         return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
     }
 
     public String getPath() {
         return path;
     }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
-
     public int getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     public String getSvcName() {
         return svcName;
-    }
-
-    public void setSvcName(String svcName) {
-        this.svcName = svcName;
     }
 
     public int getRequestId() {
@@ -134,32 +114,16 @@ public class Request {
         return requiredCpu;
     }
 
-    public void setRequiredCpu(int requiredCpu) {
-        this.requiredCpu = requiredCpu;
-    }
-
     public int getRequiredMem() {
         return requiredMem;
-    }
-
-    public void setRequiredMem(int requiredMem) {
-        this.requiredMem = requiredMem;
     }
 
     public int getRequireTime() {
         return requireTime;
     }
 
-    public void setRequireTime(int requireTime) {
-        this.requireTime = requireTime;
-    }
-
     public int getHandleTime() {
         return handleTime;
-    }
-
-    public void setHandleTime(int handleTime) {
-        this.handleTime = handleTime;
     }
 
 }

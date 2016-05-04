@@ -3,6 +3,8 @@ package Service;
 import java.util.Map;
 import java.util.TreeMap;
 
+import Pod.Pod;
+
 public class ServiceController {
     //key:svcName,value:对应的service
     private Map<String, Service> Services;
@@ -48,16 +50,16 @@ public class ServiceController {
         return true;
     }
 
-    public boolean addPodToService(String svcName, String podName) {
+    public boolean addPodToService(String svcName, Pod pod) {
         if (!Services.containsKey(svcName)) {
             printmsg("不存在该service");
             return false;
         }
-        if (Services.get(svcName).getPods().containsKey(podName)) {
+        if (Services.get(svcName).getPods().containsKey(pod.getPodName())) {
             printmsg("该pod已经在service内");
             return false;
         }
-        Services.get(svcName).getPods().put(podName, 1);
+        Services.get(svcName).getPods().put(pod.getPodName(), pod);
         return true;
     }
 
@@ -78,8 +80,12 @@ public class ServiceController {
         return Services;
     }
 
-    public void setServices(Map<String, Service> services) {
-        Services = services;
+    public Map<String, Pod> getPodBySvcName(String svcName) {
+        Service service = Services.get(svcName);
+        if (service == null) {
+            printmsg("不存在相应的service");
+            return null;
+        }
+        return service.getPods();
     }
-
 }

@@ -30,10 +30,6 @@ public class PodManager {
         return podController.findPod(podName);
     }
 
-    public PodStatus findPodStatusByName(String podName) {
-        return podController.findPodStatus(podName);
-    }
-
     public Pod createPod(String podName, String address, int port, int cpuCapacity,
                          int memCapacity) {
         addressController.createPod(address, port, podName);

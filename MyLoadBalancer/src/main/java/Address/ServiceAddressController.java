@@ -69,9 +69,4 @@ public class ServiceAddressController {
     public Map<String, Map<Integer, String>> getAddressMap() {
         return addressMap;
     }
-
-    public void setAddressMap(Map<String, Map<Integer, String>> addressMap) {
-        this.addressMap = addressMap;
-    }
-
 }
