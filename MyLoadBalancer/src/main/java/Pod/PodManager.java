@@ -43,4 +43,9 @@ public class PodManager {
         return podController.deletePod(podName);
 
     }
+
+    public void clean() {
+        addressController.clean();
+        podController.clean();
+    }
 }

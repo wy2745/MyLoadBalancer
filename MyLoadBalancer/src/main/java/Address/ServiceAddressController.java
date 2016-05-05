@@ -69,4 +69,8 @@ public class ServiceAddressController {
     public Map<String, Map<Integer, String>> getAddressMap() {
         return addressMap;
     }
+
+    public void clean() {
+        addressMap.clear();
+    }
 }

@@ -2,7 +2,6 @@ package GraduatePro.MyLoadBalancer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import Cluster.ClusterManager;
 import Request.Request;
@@ -16,7 +15,7 @@ public class App {
         System.out.println("Hello World!");
         ClusterManager clusterManager = new ClusterManager();
         clusterManager.createService("service1", "101", 11);
-        clusterManager.createRequestLog("service1", "/user", 2, 2, 3);
+        clusterManager.createRequestLog("service1", "/user", 2, 2, 3000);
         clusterManager.createPod("pod1", "110.110.110.110", 11, 12, 12);
         clusterManager.createPod("pod2", "110.110.110.112", 11, 12, 12);
         clusterManager.createPodRunner("pod1");
@@ -42,10 +41,7 @@ public class App {
                 clusterManager.assignRequestToPod(requests.get(i - 1), "pod2");
             i++;
         }
-        Scanner sc = new Scanner(System.in);
-        String str = sc.nextLine();
-        clusterManager.podStop("pod1");
-        clusterManager.podStop("pod2");
+
         return;
         //        Scanner sc = new Scanner(System.in);
         //

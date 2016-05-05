@@ -155,4 +155,12 @@ public class RequestController {
         this.requests = requests;
     }
 
+    public void clean() {
+        handleTime = 0;
+        observe = false;
+        this.requests.clear();
+        this.requestsLogMap.clear();
+        this.finishLst.clear();
+    }
+
 }

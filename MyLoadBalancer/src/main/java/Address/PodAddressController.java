@@ -69,4 +69,8 @@ public class PodAddressController {
         return addressMap;
     }
 
+    public void clean() {
+        addressMap.clear();
+    }
+
 }

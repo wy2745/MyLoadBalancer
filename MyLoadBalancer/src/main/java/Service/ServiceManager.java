@@ -55,4 +55,9 @@ public class ServiceManager {
     public boolean deletePodFromService(String svcName, String podName) {
         return serviceController.deletePodFromService(svcName, podName);
     }
+
+    public void clean() {
+        addressController.clean();
+        serviceController.clean();
+    }
 }

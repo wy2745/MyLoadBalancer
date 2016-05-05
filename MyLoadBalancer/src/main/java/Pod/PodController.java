@@ -53,4 +53,8 @@ public class PodController {
         return podSet;
     }
 
+    public void clean() {
+        podSet.clear();
+    }
+
 }

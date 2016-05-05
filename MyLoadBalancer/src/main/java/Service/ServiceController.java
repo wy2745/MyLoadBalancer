@@ -88,4 +88,8 @@ public class ServiceController {
         }
         return service.getPods();
     }
+
+    public void clean() {
+        Services.clear();
+    }
 }

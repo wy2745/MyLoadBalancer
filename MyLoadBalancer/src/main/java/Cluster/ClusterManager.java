@@ -1,12 +1,15 @@
 package Cluster;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import Pod.Pod;
 import Pod.PodManager;
-import Pod.PodRunner;
+import Pod.PodRunnable;
 import Request.Request;
 import Request.RequestController;
 import Request.RequestLog;
@@ -14,20 +17,23 @@ import Service.Service;
 import Service.ServiceManager;
 
 public class ClusterManager {
-    private PodManager        podManager;
+    private PodManager                     podManager;
 
-    private RequestController requestController;
+    private RequestController              requestController;
 
-    private ServiceManager    serviceManager;
+    private ServiceManager                 serviceManager;
 
-    private boolean           selfObserve;
+    private boolean                        selfObserve;
 
-    private String            funcPrefix = "cluster-controller:  ";
+    private List<ScheduledExecutorService> podRunner;
+
+    private String                         funcPrefix = "cluster-controller:  ";
 
     private void init() {
         podManager = new PodManager();
         requestController = new RequestController();
         serviceManager = new ServiceManager();
+        podRunner = new ArrayList<ScheduledExecutorService>();
         selfObserve = false;
     }
 
@@ -164,12 +170,25 @@ public class ClusterManager {
         Pod pod = podManager.findPodByName(podName);
         if (pod == null)
             return;
-        new Timer().schedule(new PodRunner(pod), 1000);
+        //        new Timer().schedule(new PodRunner(pod), 1000);
+        ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
+        PodRunnable task = new PodRunnable(pod);
+        //1秒后开始执行任务，以后每隔2秒执行一次
+        executorService.scheduleWithFixedDelay(task, 0, 1, TimeUnit.MILLISECONDS);
+        podRunner.add(executorService);
     }
 
     public boolean startObserveRequest() {
-        ListPodUsage();
-        return this.requestController.observerRequest();
+        boolean finish = this.requestController.observerRequest();
+        if (finish == false)
+            ListPodUsage();
+        if (finish == true) {
+            for (ScheduledExecutorService scheduledExecutorService : podRunner) {
+                scheduledExecutorService.shutdown();
+            }
+            clean();
+        }
+        return finish;
 
     }
 
@@ -189,7 +208,12 @@ public class ClusterManager {
 
     public void startSelfObserve() {
         if (selfObserve) {
-            new Timer().schedule(new ClusterSelfObserver(this), 1000);
+            //new Timer().schedule(new ClusterSelfObserver(this), 1000);
+            ScheduledExecutorService executorService = new ScheduledThreadPoolExecutor(1);
+            ClusterSelfObRunnable task = new ClusterSelfObRunnable(this);
+            //1秒后开始执行任务，以后每隔2秒执行一次
+            executorService.scheduleWithFixedDelay(task, 0, 1, TimeUnit.MILLISECONDS);
+            podRunner.add(executorService);
         }
     }
 
@@ -199,6 +223,15 @@ public class ClusterManager {
 
     private void printmsg(String msg) {
         System.out.println(funcPrefix + msg);
+    }
+
+    private void clean() {
+        podRunner.clear();
+        this.selfObserve = false;
+        podManager.clean();
+        serviceManager.clean();
+        requestController.clean();
+        printmsg("所有内容清理完毕");
     }
 
 }
