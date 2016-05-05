@@ -3,11 +3,11 @@ package Request;
 //在外部使用的时候，需要和map结合，svcReqMap的key为appName(String)，value为pathReqLogMap，该map的key是path(String),value是requestLog
 public class RequestLog {
 
-    private int requiredCpu;
+    private double requiredCpu;
 
-    private int requiredMem;
+    private double requiredMem;
 
-    private int requiredTime;
+    private int    requiredTime;
 
     public RequestLog(int requiredCpu, int requiredMem, int requiredTime) {
         this.requiredCpu = requiredCpu;
@@ -15,19 +15,19 @@ public class RequestLog {
         this.requiredTime = requiredTime;
     }
 
-    public int getRequiredCpu() {
+    public double getRequiredCpu() {
         return requiredCpu;
     }
 
-    public void setRequiredCpu(int requiredCpu) {
+    public void setRequiredCpu(double requiredCpu) {
         this.requiredCpu = requiredCpu;
     }
 
-    public int getRequiredMem() {
+    public double getRequiredMem() {
         return requiredMem;
     }
 
-    public void setRequiredMem(int requiredMem) {
+    public void setRequiredMem(double requiredMem) {
         this.requiredMem = requiredMem;
     }
 

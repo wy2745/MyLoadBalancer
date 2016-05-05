@@ -16,17 +16,17 @@ public class Pod {
 
     private boolean       running;
 
-    private int           cpuCapacity;
+    private double        cpuCapacity;
 
-    private int           memCapacity;
+    private double        memCapacity;
 
-    private int           cpuAvailable;
+    private double        cpuAvailable;
 
-    private int           memAvailable;
+    private double        memAvailable;
 
-    private int           cpuLoad;
+    private double        cpuLoad;
 
-    private int           memLoad;
+    private double        memLoad;
 
     private String        funcPrefix = "pod:  ";
 
@@ -85,9 +85,9 @@ public class Pod {
                 if (!request.handling())
                     continue;
                 request.process();
-                System.out.println("requestId: " + request.getRequestId() + ",handleTime:"
-                                   + request.getHandleTime() + ",requiredTime: "
-                                   + request.getRequireTime());
+                //                System.out.println("requestId: " + request.getRequestId() + ",handleTime:"
+                //                                   + request.getHandleTime() + ",requiredTime: "
+                //                                   + request.getRequireTime());
                 if (request.finish()) {
                     reduceLoad(request.getRequiredCpu(), request.getRequiredMem());
                     receiveFinishRequest(request);
@@ -96,11 +96,11 @@ public class Pod {
             for (Request request : this.podRequests) {
                 if (!request.pending())
                     continue;
-                System.out
-                    .println("requestId: " + request.getRequestId() + ",cpu: "
-                             + request.getRequiredCpu() + ",mem: " + request.getRequiredMem());
-                System.out.println("PodName: " + this.podName + ",cpua: " + this.cpuAvailable
-                                   + ",mema: " + this.memAvailable);
+                //                System.out
+                //                    .println("requestId: " + request.getRequestId() + ",cpu: "
+                //                             + request.getRequiredCpu() + ",mem: " + request.getRequiredMem());
+                //                System.out.println("PodName: " + this.podName + ",cpua: " + this.cpuAvailable
+                //                                   + ",mema: " + this.memAvailable);
                 if (candigest(request.getRequiredCpu(), request.getRequiredMem())) {
                     receiveHandlingRequest(request);
                 }
@@ -108,23 +108,23 @@ public class Pod {
         }
     }
 
-    private boolean candigest(int cpu, int mem) {
-        return this.cpuAvailable >= cpu && this.memAvailable >= mem;
+    private boolean candigest(double d, double e) {
+        return this.cpuAvailable >= d && this.memAvailable >= e;
     }
 
-    private void reduceLoad(int cpu, int mem) {
-        this.cpuAvailable += cpu;
-        this.memAvailable += mem;
-        this.cpuLoad -= cpu;
-        this.memLoad -= mem;
+    private void reduceLoad(double d, double e) {
+        this.cpuAvailable += d;
+        this.memAvailable += e;
+        this.cpuLoad -= d;
+        this.memLoad -= e;
     }
 
     public int choicePick1Scorer(Request request) {
         int score = 0;
         boolean cpuOk = (this.cpuLoad < this.cpuCapacity)
-                        && (this.cpuCapacity - this.cpuLoad < request.getRequiredCpu());
+                        && (this.cpuCapacity - this.cpuLoad > request.getRequiredCpu());
         boolean memOk = (this.memLoad < this.memCapacity)
-                        && (this.memCapacity - this.memLoad < request.getRequiredMem());
+                        && (this.memCapacity - this.memLoad > request.getRequiredMem());
         if (cpuOk && memOk) {
             int cpuscore = (int) ((1 - (double) ((this.cpuLoad + request.getRequiredCpu())
                                                  / cpuCapacity))
@@ -136,27 +136,27 @@ public class Pod {
         } else if (!cpuOk && memOk) {
             int cpuscore = (int) (((double) ((this.cpuLoad + request.getRequiredCpu()) / cpuLoad)
                                    - 1)
-                                  * 100);
+                                  * 5);
             int memscore = (int) ((1 - (double) ((this.memLoad + request.getRequiredMem())
                                                  / memCapacity))
                                   * 100);
-            return score - cpuscore - memscore - 100;
+            return score + cpuscore - memscore - 100;
         } else if (!memOk && cpuOk) {
             int memscore = (int) (((double) ((this.memLoad + request.getRequiredMem()) / memLoad)
                                    - 1)
-                                  * 100);
+                                  * 5);
             int cpuscore = (int) ((1 - (double) ((this.cpuLoad + request.getRequiredCpu())
                                                  / cpuCapacity))
                                   * 100);
-            return score - cpuscore - memscore - 100;
+            return score - cpuscore + memscore - 100;
         } else {
             int memscore = (int) (((double) ((this.memLoad + request.getRequiredMem()) / memLoad)
                                    - 1)
-                                  * 100);
+                                  * 5);
             int cpuscore = (int) (((double) ((this.cpuLoad + request.getRequiredCpu()) / cpuLoad)
                                    - 1)
-                                  * 100);
-            return score - cpuscore - memscore - 200;
+                                  * 5);
+            return score + cpuscore + memscore - 200;
         }
     }
 
@@ -186,28 +186,36 @@ public class Pod {
         return running;
     }
 
-    public int getCpuCapacity() {
+    public List<Request> getPodRequests() {
+        return podRequests;
+    }
+
+    public double getCpuCapacity() {
         return cpuCapacity;
     }
 
-    public int getMemCapacity() {
+    public double getMemCapacity() {
         return memCapacity;
     }
 
-    public int getCpuAvailable() {
+    public double getCpuAvailable() {
         return cpuAvailable;
     }
 
-    public int getMemAvailable() {
+    public double getMemAvailable() {
         return memAvailable;
     }
 
-    public int getCpuLoad() {
+    public double getCpuLoad() {
         return cpuLoad;
     }
 
-    public int getMemLoad() {
+    public double getMemLoad() {
         return memLoad;
+    }
+
+    public String getFuncPrefix() {
+        return funcPrefix;
     }
 
 }

@@ -7,6 +7,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import Algorithm.Request2PodMatch;
 import Pod.Pod;
 import Pod.PodManager;
 import Pod.PodRunnable;
@@ -27,6 +28,8 @@ public class ClusterManager {
 
     private List<ScheduledExecutorService> podRunner;
 
+    private Request2PodMatch               request2PodMatch;
+
     private String                         funcPrefix = "cluster-controller:  ";
 
     private void init() {
@@ -34,6 +37,7 @@ public class ClusterManager {
         requestController = new RequestController();
         serviceManager = new ServiceManager();
         podRunner = new ArrayList<ScheduledExecutorService>();
+        request2PodMatch = new Request2PodMatch();
         selfObserve = false;
     }
 
@@ -158,6 +162,32 @@ public class ClusterManager {
         return null;
     }
 
+    public void scheduleRequest(String mode) {
+        if (mode.equals("random")) {
+            for (Request request : requestController.getRequests()) {
+                Service service = serviceManager.findServiceByAddress(request.getIp(),
+                    request.getPort());
+                if (service == null) {
+                    printmsg("找不到对应的service");
+                    continue;
+                }
+                assignRequestToPod(request,
+                    request2PodMatch.randomPick(request, service.getPods()));
+            }
+        } else {
+            for (Request request : requestController.getRequests()) {
+                Service service = serviceManager.findServiceByAddress(request.getIp(),
+                    request.getPort());
+                if (service == null) {
+                    printmsg("找不到对应的service");
+                    continue;
+                }
+                assignRequestToPod(request,
+                    request2PodMatch.choicePick1(request, service.getPods()));
+            }
+        }
+    }
+
     public void podRun(String podName) {
         podManager.findPodByName(podName).run();
     }
@@ -180,8 +210,8 @@ public class ClusterManager {
 
     public boolean startObserveRequest() {
         boolean finish = this.requestController.observerRequest();
-        if (finish == false)
-            ListPodUsage();
+        //        if (finish == false)
+        //            ListPodUsage();
         if (finish == true) {
             for (ScheduledExecutorService scheduledExecutorService : podRunner) {
                 scheduledExecutorService.shutdown();
@@ -232,6 +262,10 @@ public class ClusterManager {
         serviceManager.clean();
         requestController.clean();
         printmsg("所有内容清理完毕");
+    }
+
+    public void serfunc(String string) {
+        funcPrefix += string;
     }
 
 }

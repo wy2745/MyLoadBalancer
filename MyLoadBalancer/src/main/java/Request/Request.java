@@ -14,9 +14,9 @@ public class Request {
 
     private int    status;
 
-    private int    requiredCpu;
+    private double requiredCpu;
 
-    private int    requiredMem;
+    private double requiredMem;
 
     private int    requireTime;
 
@@ -110,20 +110,36 @@ public class Request {
         this.requestId = requestId;
     }
 
-    public int getRequiredCpu() {
+    public double getRequiredCpu() {
         return requiredCpu;
     }
 
-    public int getRequiredMem() {
+    public void setRequiredCpu(double requiredCpu) {
+        this.requiredCpu = requiredCpu;
+    }
+
+    public double getRequiredMem() {
         return requiredMem;
+    }
+
+    public void setRequiredMem(double requiredMem) {
+        this.requiredMem = requiredMem;
     }
 
     public int getRequireTime() {
         return requireTime;
     }
 
+    public void setRequireTime(int requireTime) {
+        this.requireTime = requireTime;
+    }
+
     public int getHandleTime() {
         return handleTime;
+    }
+
+    public void setHandleTime(int handleTime) {
+        this.handleTime = handleTime;
     }
 
 }

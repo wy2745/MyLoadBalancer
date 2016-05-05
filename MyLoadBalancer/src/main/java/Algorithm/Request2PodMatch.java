@@ -10,7 +10,9 @@ import Request.Request;
 
 public class Request2PodMatch {
 
-    private double rate = 1 / 3;
+    private int rate1 = 1;
+
+    private int rate2 = 3;
 
     private int generateRanNum(int max) {
         Random random = new Random();
@@ -46,17 +48,23 @@ public class Request2PodMatch {
 
     //选择pod中匹配后剩余资源最少的pod，这样来确保优秀pod的请求处理能力
     public String choicePick1(Request request, Map<String, Pod> podMap) {
-        List<Integer> numLst = generateRanNumLst(podMap.size(), (int) this.rate * podMap.size());
+        List<Integer> numLst = generateRanNumLst(podMap.size(),
+            (int) (this.rate1 * podMap.size()) / this.rate2);
         int highestScore = -10000;
         String podName = "";
-        int i = 0;
-        for (Pod pod : podMap.values()) {
-            if (numLst.contains(i)) {
-                int initScore = 0;
-
+        for (int num : numLst) {
+            int i = 0;
+            for (Pod pod : podMap.values()) {
+                if (num == i) {
+                    int score = pod.choicePick1Scorer(request);
+                    if (highestScore < score) {
+                        highestScore = score;
+                        podName = pod.getPodName();
+                    }
+                }
+                i++;
             }
-            i++;
         }
-        return null;
+        return podName;
     }
 }

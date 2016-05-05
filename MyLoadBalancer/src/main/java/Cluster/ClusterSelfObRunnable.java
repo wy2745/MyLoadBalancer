@@ -9,7 +9,7 @@ public class ClusterSelfObRunnable implements Runnable {
     }
 
     public void run() {
-        System.out.println("cluster self observing...");
+        //System.out.println("cluster self observing...");
         if (this.clusterManager.whetherselfObserve()) {
             if (this.clusterManager.startObserveRequest())
                 this.clusterManager.selfObserveStop();
