@@ -41,6 +41,22 @@ public class PodController {
         return pod;
     }
 
+    public double getCpuUsage() {
+        double cpuUsage = 0;
+        for (Pod pod : podSet.values()) {
+            cpuUsage += (1 - pod.getCpuAvailable() / pod.getCpuCapacity());
+        }
+        return cpuUsage / podSet.size();
+    }
+
+    public double getMenUsage() {
+        double memUsage = 0;
+        for (Pod pod : podSet.values()) {
+            memUsage += (1 - pod.getMemAvailable() / pod.getMemCapacity());
+        }
+        return memUsage / podSet.size();
+    }
+
     public boolean deletePod(String podName) {
         if (podSet.containsKey(podName))
             podSet.remove(podName);

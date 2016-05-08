@@ -15,7 +15,11 @@ public class RequestController {
 
     private boolean                              observe;
 
-    private int                                  handleTime;
+    private double                               cpuUsage   = 0;
+
+    private double                               memUsage   = 0;
+
+    private double                               handleTime;
 
     private String                               funcPrefix = "request-controller: ";
 
@@ -40,10 +44,12 @@ public class RequestController {
         this.observe = false;
     }
 
-    public boolean observerRequest() {
+    public boolean observerRequest(double cpu, double mem) {
         if (this.observe) {
             int i = 0;
             handleTime += 1;
+            this.cpuUsage += cpu;
+            this.memUsage += mem;
             int size = requests.size();
             while (i < size) {
                 if (finishLst.contains(i)) {
@@ -55,6 +61,8 @@ public class RequestController {
                 i++;
                 if (finishLst.size() == requests.size()) {
                     printmsg("所有请求都被完成了，完成时间是" + handleTime);
+                    printmsg("平均使用率,cpuUsage: " + this.cpuUsage / handleTime + ",memUsage: "
+                             + this.memUsage / handleTime);
                     observe = false;
                     handleTime = 0;
                     return true;
@@ -157,6 +165,8 @@ public class RequestController {
 
     public void clean() {
         handleTime = 0;
+        cpuUsage = 0;
+        memUsage = 0;
         observe = false;
         this.requests.clear();
         this.requestsLogMap.clear();

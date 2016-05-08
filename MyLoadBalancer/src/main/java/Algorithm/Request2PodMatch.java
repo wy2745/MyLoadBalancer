@@ -67,4 +67,25 @@ public class Request2PodMatch {
         }
         return podName;
     }
+
+    public String choicePick2(Request request, Map<String, Pod> podMap) {
+        List<Integer> numLst = generateRanNumLst(podMap.size(),
+            (int) (this.rate1 * podMap.size()) / this.rate2);
+        int highestScore = -10000;
+        String podName = "";
+        for (int num : numLst) {
+            int i = 0;
+            for (Pod pod : podMap.values()) {
+                if (num == i) {
+                    int score = pod.choicePick2Scorer(request);
+                    if (highestScore < score) {
+                        highestScore = score;
+                        podName = pod.getPodName();
+                    }
+                }
+                i++;
+            }
+        }
+        return podName;
+    }
 }

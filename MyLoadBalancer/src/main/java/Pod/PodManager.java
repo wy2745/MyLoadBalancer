@@ -44,6 +44,14 @@ public class PodManager {
 
     }
 
+    public double getCpuUsage() {
+        return podController.getCpuUsage();
+    }
+
+    public double getMemUsage() {
+        return podController.getMenUsage();
+    }
+
     public void clean() {
         addressController.clean();
         podController.clean();

@@ -174,7 +174,7 @@ public class ClusterManager {
                 assignRequestToPod(request,
                     request2PodMatch.randomPick(request, service.getPods()));
             }
-        } else {
+        } else if (mode.equals("choice1")) {
             for (Request request : requestController.getRequests()) {
                 Service service = serviceManager.findServiceByAddress(request.getIp(),
                     request.getPort());
@@ -184,6 +184,17 @@ public class ClusterManager {
                 }
                 assignRequestToPod(request,
                     request2PodMatch.choicePick1(request, service.getPods()));
+            }
+        } else {
+            for (Request request : requestController.getRequests()) {
+                Service service = serviceManager.findServiceByAddress(request.getIp(),
+                    request.getPort());
+                if (service == null) {
+                    printmsg("找不到对应的service");
+                    continue;
+                }
+                assignRequestToPod(request,
+                    request2PodMatch.choicePick2(request, service.getPods()));
             }
         }
     }
@@ -209,12 +220,14 @@ public class ClusterManager {
     }
 
     public boolean startObserveRequest() {
-        boolean finish = this.requestController.observerRequest();
+        boolean finish = this.requestController.observerRequest(podManager.getCpuUsage(),
+            podManager.getMemUsage());
         //        if (finish == false)
         //            ListPodUsage();
         if (finish == true) {
             for (ScheduledExecutorService scheduledExecutorService : podRunner) {
                 scheduledExecutorService.shutdown();
+
             }
             clean();
         }

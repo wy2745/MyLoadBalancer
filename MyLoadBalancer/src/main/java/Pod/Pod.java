@@ -160,6 +160,26 @@ public class Pod {
         }
     }
 
+    public int choicePick2Scorer(Request request) {
+        int score = 0;
+        boolean cpuOk = (this.cpuLoad < this.cpuCapacity)
+                        && (this.cpuCapacity - this.cpuLoad > request.getRequiredCpu());
+        boolean memOk = (this.memLoad < this.memCapacity)
+                        && (this.memCapacity - this.memLoad > request.getRequiredMem());
+        int cpuscore = (int) (this.cpuCapacity - this.cpuLoad - request.getRequiredCpu());//最多100
+        int memscore = (int) (this.memCapacity - this.memLoad - request.getRequiredMem());//最多100
+        if (cpuOk && memOk) {
+
+            return score + cpuscore + memscore;
+        } else if (!cpuOk && memOk) {
+            return score + cpuscore + memscore - 100;
+        } else if (!memOk && cpuOk) {
+            return score + cpuscore + memscore - 100;
+        } else {
+            return score + cpuscore + memscore - 200;
+        }
+    }
+
     public void run() {
         this.running = true;
         printmsg(podName + "is running");
